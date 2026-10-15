@@ -54,8 +54,7 @@ export default function BeforeStartScreen() {
         ))}
       </View>
 
-      {/* Sem ação até que a próxima tela seja implementada. */}
-      <ScreenButton label="Continuar" disabled={!allConfirmed} outlined scale={scale} textScale={textScale} marginTop={83 * scale} />
+      <ScreenButton label="Continuar" onPress={() => { if (allConfirmed) router.push('/tcle'); }} disabled={!allConfirmed} outlined scale={scale} textScale={textScale} marginTop={83 * scale} />
       <ScreenButton label="Voltar" onPress={goBack} outlined secondary scale={scale} textScale={textScale} marginTop={18 * scale} />
     </ScreenLayout>
   );
