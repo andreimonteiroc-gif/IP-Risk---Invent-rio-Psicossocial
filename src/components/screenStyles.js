@@ -1,0 +1,45 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  background: { flex: 1, backgroundColor: '#EAF3F8', alignItems: 'center' },
+  screen: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 430,
+    overflow: 'hidden',
+    backgroundColor: '#EAF3F8',
+  },
+  safeArea: { flex: 1 },
+  scrollContent: { flexGrow: 1 },
+  canvas: { flexGrow: 1, overflow: 'hidden' },
+  content: { alignItems: 'center', zIndex: 1 },
+  // No RN 0.86, absoluteFill mantém a camada com a mesma área do canvas.
+  decoration: { ...StyleSheet.absoluteFill, overflow: 'hidden' },
+  lightCircle: { position: 'absolute', borderRadius: 999, backgroundColor: '#C9DFEF' },
+  darkCircle: { position: 'absolute', borderRadius: 999, backgroundColor: '#2B6085' },
+  infoButton: { alignSelf: 'flex-start', width: 44, minHeight: 44, justifyContent: 'center' },
+  infoCircle: {
+    width: 19,
+    height: 19,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#15242B',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  infoText: { fontSize: 13, lineHeight: 16, fontWeight: 'bold', color: '#15242B' },
+  title: { fontWeight: 'bold', textAlign: 'center', color: '#101010' },
+  subtitle: { textAlign: 'center', color: '#101010' },
+  description: { maxWidth: '100%', textAlign: 'center', color: '#101010' },
+  startButton: {
+    width: '100%',
+    minWidth: 44,
+    borderRadius: 24,
+    backgroundColor: '#20465A',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.25)',
+  },
+  startButtonText: { color: '#FFFFFF', textAlign: 'center' },
+});
