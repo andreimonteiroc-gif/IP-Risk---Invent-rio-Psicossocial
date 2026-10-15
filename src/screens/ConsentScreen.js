@@ -13,11 +13,9 @@ const options = [
 export default function ConsentScreen() {
   const { scale, textScale } = useScreenMetrics();
   const [choice, setChoice] = useState(/** @type {string | null} */ (null));
-  const [showNextStep, setShowNextStep] = useState(false);
   // Limpa também ao voltar da recusa por gesto ou pelo botão de navegação.
   useFocusEffect(useCallback(() => {
     setChoice(null);
-    setShowNextStep(false);
   }, []));
   const body = { fontSize: 16 * textScale, lineHeight: 19 * textScale };
   const continueFlow = () => {
@@ -25,7 +23,7 @@ export default function ConsentScreen() {
       setChoice(null);
       router.push('/refusal');
     } else if (choice === 'agree') {
-      setShowNextStep(true);
+      router.push('/sector');
     }
   };
 
@@ -62,7 +60,7 @@ export default function ConsentScreen() {
         {options.map(option => (
           <Pressable key={option.value} accessibilityRole="radio" accessibilityLabel={option.label}
             accessibilityState={{ checked: choice === option.value }}
-            onPress={() => { setChoice(option.value); setShowNextStep(false); }}
+            onPress={() => setChoice(option.value)}
             style={[local.option, choice === option.value && local.selected]}>
             <View pointerEvents="none" accessible={false} aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
               style={[local.box, choice === option.value && local.checkedBox]}>
@@ -74,9 +72,6 @@ export default function ConsentScreen() {
       </View>
       <ScreenButton label="Continuar" disabled={choice === null} onPress={continueFlow} outlined secondary
         scale={scale} textScale={textScale} marginTop={46 * scale} />
-      {showNextStep && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={[local.notice, body]}>
-        A próxima etapa, seleção de setor, está em desenvolvimento. Nenhum consentimento foi registrado.
-      </Text>}
       <ScreenButton label="Voltar" onPress={() => router.canGoBack() ? router.back() : router.replace('/before-start')}
         outlined secondary scale={scale} textScale={textScale} marginTop={18 * scale} />
     </ScreenLayout>

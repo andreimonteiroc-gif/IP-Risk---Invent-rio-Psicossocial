@@ -10,8 +10,8 @@ export function useScreenMetrics() {
   return { height, insets, scale, textScale: Math.max(1, scale) };
 }
 
-/** @param {{ children: import('react').ReactNode, beforeStart?: boolean }} props */
-export default function ScreenLayout({ children, beforeStart = false }) {
+/** @param {{ children: import('react').ReactNode, beforeStart?: boolean, plain?: boolean }} props */
+export default function ScreenLayout({ children, beforeStart = false, plain = false }) {
   const { height, insets, scale } = useScreenMetrics();
   return (
     <View style={styles.background}>
@@ -21,7 +21,7 @@ export default function ScreenLayout({ children, beforeStart = false }) {
           <ScrollView contentInsetAdjustmentBehavior="never" contentContainerStyle={styles.scrollContent}>
             <View style={[styles.canvas, { minHeight: Math.max(0, height - insets.top) }]}>
               {/* Fundo decorativo sem receber toques ou foco de acessibilidade. */}
-              <View
+              {!plain && <View
                 pointerEvents="none"
                 accessible={false}
                 aria-hidden={true}
@@ -41,14 +41,14 @@ export default function ScreenLayout({ children, beforeStart = false }) {
                   left: 124 * scale,
                   bottom: -239 * scale,
                 }]} />
-              </View>
+              </View>}
 
               <View style={[styles.content, {
                 paddingHorizontal: 34 * scale,
                 // O SafeAreaView já aplica o recuo superior: não o contamos duas vezes.
                 paddingTop: Math.max(12, 70 * scale - insets.top),
                 // Protege os controles; o fundo pode ocupar a área inferior do aparelho.
-                paddingBottom: Math.max(193 * scale, insets.bottom + 32),
+                paddingBottom: plain ? insets.bottom + 24 : Math.max(193 * scale, insets.bottom + 32),
               }]}>
                 {children}
               </View>
