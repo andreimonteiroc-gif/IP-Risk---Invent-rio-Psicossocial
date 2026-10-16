@@ -1,9 +1,10 @@
-import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import ScreenLayout, { useScreenMetrics } from '../components/ScreenLayout';
 import ScreenButton from '../components/ScreenButton';
 import { styles } from '../components/screenStyles';
+import { useQuestionnaire } from '../state/QuestionnaireContext';
+import useFlowNavigation from '../hooks/useFlowNavigation';
 
 const guidance = [
   { icon: 'clipboard', title: 'São 31 questões no total.', text: 'Não há resposta certa ou errada. O importante é a sua percepção.' },
@@ -12,8 +13,10 @@ const guidance = [
 ];
 
 export default function QuestionnaireGuidanceScreen() {
+  const { answers, resetAnswers } = useQuestionnaire();
+  const { run, open } = useFlowNavigation();
+  const hasAnswers = Object.keys(answers).length > 0;
   const { scale, textScale } = useScreenMetrics();
-  const [showNotice, setShowNotice] = useState(false);
   const body = { fontSize: 16 * textScale, lineHeight: 19 * textScale };
 
   return (
@@ -41,15 +44,15 @@ export default function QuestionnaireGuidanceScreen() {
           </View>
         ))}
       </View>
-      <ScreenButton label="Iniciar questionário" onPress={() => setShowNotice(true)}
+      <ScreenButton label={hasAnswers ? 'Retomar questionário' : 'Iniciar questionário'} onPress={() => run(() => open('/questionnaire', { fromReview: 'false' }))}
         scale={scale} textScale={textScale} marginTop={60 * scale} />
-      {showNotice && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={[body, local.notice]}>
-        Próxima etapa em desenvolvimento. O questionário ainda não está disponível. Nenhuma resposta foi registrada.
-      </Text>}
+      {hasAnswers && <ScreenButton label="Iniciar nova participação (apagar respostas)" outlined secondary
+        onPress={() => run(() => { resetAnswers(); open('/questionnaire', { fromReview: 'false' }); })}
+        scale={scale} textScale={textScale} marginTop={12 * scale} />}
       <ScreenButton label="Voltar" outlined secondary
-        onPress={() => router.canGoBack() ? router.back() : router.replace('/sector')}
+        onPress={() => run(() => router.dismissTo('/sector'))}
         scale={scale} textScale={textScale} marginTop={12 * scale} />
-      <ScreenButton label="Fechar" outlined secondary onPress={() => router.dismissTo('/')}
+      <ScreenButton label="Fechar" outlined secondary onPress={() => run(() => { resetAnswers(); router.dismissTo('/'); })}
         scale={scale} textScale={textScale} marginTop={12 * scale} />
     </ScreenLayout>
   );
@@ -68,5 +71,4 @@ const local = StyleSheet.create({
   clock: { width: 34, height: 34, borderRadius: 17, borderWidth: 3, borderColor: '#FFFFFF' },
   hour: { position: 'absolute', left: 13, top: 4, width: 3, height: 12, borderRadius: 2, backgroundColor: '#FFFFFF' },
   minute: { position: 'absolute', left: 13, top: 13, width: 10, height: 3, borderRadius: 2, backgroundColor: '#FFFFFF', transform: [{ rotate: '25deg' }] },
-  notice: { alignSelf: 'stretch', marginTop: 16, padding: 16, borderRadius: 12, backgroundColor: '#C9DFEF', color: '#20465A' },
 });

@@ -10,8 +10,8 @@ export function useScreenMetrics() {
   return { height, insets, scale, textScale: Math.max(1, scale) };
 }
 
-/** @param {{ children: import('react').ReactNode, beforeStart?: boolean, plain?: boolean }} props */
-export default function ScreenLayout({ children, beforeStart = false, plain = false }) {
+/** @param {{ children: import('react').ReactNode, beforeStart?: boolean, plain?: boolean, fill?: boolean }} props */
+export default function ScreenLayout({ children, beforeStart = false, plain = false, fill = false }) {
   const { height, insets, scale } = useScreenMetrics();
   return (
     <View style={styles.background}>
@@ -44,6 +44,8 @@ export default function ScreenLayout({ children, beforeStart = false, plain = fa
               </View>}
 
               <View style={[styles.content, {
+                // Permite distribuir o conteúdo e os controles pela altura útil.
+                minHeight: fill ? Math.max(0, height - insets.top) : undefined,
                 paddingHorizontal: 34 * scale,
                 // O SafeAreaView já aplica o recuo superior: não o contamos duas vezes.
                 paddingTop: Math.max(12, 70 * scale - insets.top),
