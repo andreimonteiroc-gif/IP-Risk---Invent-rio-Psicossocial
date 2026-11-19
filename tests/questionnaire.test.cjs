@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 
-const { load, mount, findAll, button, card } = require('./helpers.cjs');
+const { createSession, load, mount, findAll, button, card } = require('./helpers.cjs');
 const { questions } = load('src/data/questions.js');
 
 test('31 IDs sequenciais, sete blocos, 11 diretas, 16 inversas e quatro binárias', () => {
@@ -24,7 +24,8 @@ test('31 IDs sequenciais, sete blocos, 11 diretas, 16 inversas e quatro binária
 });
 
 test('percorre as 31 questões, preserva e permite substituir respostas ao voltar', () => {
-  const app = mount('src/screens/QuestionnaireScreen.js');
+  const session = createSession();
+  const app = session.mount('src/screens/QuestionnaireScreen.js');
   let tree = app.render();
   assert.equal(card(tree).selectedAnswer, undefined);
   assert.equal(button(tree, 'Avançar').disabled, true);
@@ -43,6 +44,22 @@ test('percorre as 31 questões, preserva e permite substituir respostas ao volta
     assert.equal(next.disabled, false);
     next.onPress();
     next.onPress(); // Toque duplicado não pode saltar uma pergunta sem resposta.
+    if (index === 26) {
+      const sensitiveRoute = app.calls.pop();
+      assert.equal(sensitiveRoute[0], 'push');
+      assert.equal(sensitiveRoute[1].pathname, '/sensitive-guidance');
+      assert.deepEqual(Object.keys(sensitiveRoute[1]), ['pathname', 'params']);
+      const sensitive = session.mount('src/screens/SensitiveGuidanceScreen.js');
+      const intro = sensitive.render();
+      assert.ok(findAll(intro, node => node.type === 'Text' && node.props.children === 'Perguntas sensíveis').length);
+      button(intro, 'Entendi, continuar').onPress();
+      const questionnaireRoute = sensitive.calls.pop();
+      assert.equal(questionnaireRoute[0], 'push');
+      assert.equal(questionnaireRoute[1].pathname, '/questionnaire');
+      assert.equal(questionnaireRoute[1].params.fromReview, 'false');
+      assert.equal(card(app.render()).question.id, 'Q28');
+      app.focus();
+    }
   }
   tree = app.render();
   assert.equal(card(tree).question.id, 'Q31');
@@ -50,6 +67,7 @@ test('percorre as 31 questões, preserva e permite substituir respostas ao volta
   assert.equal(app.calls.length, 1, 'abre a revisão uma única vez na Q31');
   assert.equal(app.calls[0][0], 'push');
   assert.equal(app.calls[0][1].pathname, '/review');
+  assert.ok(fs.existsSync(path.resolve(__dirname, '../src/app/sensitive-guidance.js')));
   app.focus(); // O participante retorna da revisão à instância original.
   for (let index = 30; index >= 0; index--) {
     tree = app.render();

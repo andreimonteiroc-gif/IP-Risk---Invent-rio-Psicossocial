@@ -10,6 +10,7 @@
       "supportsTablet": true
     },
     "android": {
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -23,7 +24,8 @@
     },
     "scheme": "inventario-psicossocial",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-sharing"
     ]
   }
 }

@@ -1,0 +1,76 @@
+{
+  "versao": "setores-fornecidos-2026-10-21-v1",
+  "origem": "Catálogo fornecido pelo responsável em 21/10/2026 como Tabela Oficial de Setores Pré-Programados (MTE / eSocial). Fonte institucional não anexada; transcrição sem certificação normativa.",
+  "macroareas": [
+    {
+      "nome": "Ensino, Pesquisa e Extensão (Universidades e Escolas)",
+      "subdivisoes": [
+        "Docência e Corpo Docente (Professores, Tutores, Docentes Pesquisadores)",
+        "Laboratórios e Pesquisa Científica (Laboratórios de Ensino, Biotérios, Central de Análises)",
+        "Secretaria Acadêmica e Atendimento ao Aluno (Registro Acadêmico, Coordenações de Curso)",
+        "Biblioteca e Acervo Documental",
+        "Clínicas-Escola e Ambientes de Prática (Odontologia, Enfermagem, Medicina, Psicologia)"
+      ]
+    },
+    {
+      "nome": "Administrativo e Gestão Corporal (Comum a todas as empresas)",
+      "subdivisoes": [
+        "Recursos Humanos / Departamento Pessoal",
+        "Financeiro, Contabilidade e Faturamento",
+        "Jurídico e Compliance",
+        "Tecnologia da Informação (TI) e Sistemas",
+        "Compras, Suprimentos e Licitações",
+        "Diretoria Executiva e Gestão Estratégica"
+      ]
+    },
+    {
+      "nome": "Operação Industrial e Produção (Indústria e Fabril)",
+      "subdivisoes": [
+        "Linha de Produção / Manufatura (Montagem, Processamento, Usinagem)",
+        "Controle de Qualidade e Garantia da Qualidade",
+        "Almoxarifado, Estoque e Logística Interna",
+        "Engenharia de Processos e P&D Industrial",
+        "Manutenção Industrial (Mecânica, Elétrica, Automação)"
+      ]
+    },
+    {
+      "nome": "Saúde, Biossegurança e Atendimento Clínico (Hospitais e Clínicas)",
+      "subdivisoes": [
+        "Atendimento Assistencial / Enfermagem",
+        "Corpo Médico e Multiprofissional de Saúde",
+        "Central de Material e Esterilização (CME)",
+        "Diagnóstico por Imagem e Análises Clínicas",
+        "Recepção e Triagem de Pacientes"
+      ]
+    },
+    {
+      "nome": "Serviços Gerais, Infraestrutura e Apoio (Comum a todas)",
+      "subdivisoes": [
+        "Manutenção Predial e Infraestrutura (Eletricistas, Encanadores, Pintores)",
+        "Higienização, Limpeza e Serviços Gerais",
+        "Segurança Patrimonial e Portaria",
+        "Transporte, Frota e Logística Externa (Motoristas, Agentes de Carga)"
+      ]
+    },
+    {
+      "nome": "Comercial, Vendas e Atendimento ao Cliente",
+      "subdivisoes": [
+        "Vendas Diretas e Balcão",
+        "Comercial Externo e Representação",
+        "Atendimento ao Cliente / SAC / Teleatendimento",
+        "Marketing e Comunicação Institucional"
+      ]
+    },
+    {
+      "nome": "Saúde e Segurança do Trabalho (SST)",
+      "subdivisoes": [
+        "SESMT (Engenharia de Segurança e Medicina do Trabalho)",
+        "Ambiente de Campo / Operações Externas de Risco"
+      ]
+    },
+    {
+      "nome": "Alimentação e Hospitalidade",
+      "subdivisoes": ["Cozinha Industrial / Refeitório / Nutrição", "Alojamento e Governança"]
+    }
+  ]
+}

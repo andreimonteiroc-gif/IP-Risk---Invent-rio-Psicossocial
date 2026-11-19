@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import ScreenLayout, { useScreenMetrics } from '../components/ScreenLayout';
 import ScreenButton from '../components/ScreenButton';
 import { styles } from '../components/screenStyles';
+import { colors } from '../theme/colors';
 import { useQuestionnaire } from '../state/QuestionnaireContext';
 import useFlowNavigation from '../hooks/useFlowNavigation';
 
@@ -13,19 +14,26 @@ const guidance = [
 ];
 
 export default function QuestionnaireGuidanceScreen() {
-  const { answers, resetAnswers } = useQuestionnaire();
+  const { answers, resetAnswers, resetParticipation, submissionLocked } = useQuestionnaire();
   const { run, open } = useFlowNavigation();
   const hasAnswers = Object.keys(answers).length > 0;
   const { scale, textScale } = useScreenMetrics();
   const body = { fontSize: 16 * textScale, lineHeight: 19 * textScale };
 
+  if (submissionLocked) return (
+    <ScreenLayout plain backgroundColor={colors.white}>
+      <Text style={[body, { color: colors.text }]}>Há uma tentativa de envio em andamento ou já confirmada.</Text>
+      <ScreenButton label="Voltar à revisão" brand scale={scale} textScale={textScale} onPress={() => run(() => router.dismissTo('/review'))} />
+    </ScreenLayout>
+  );
+
   return (
-    <ScreenLayout plain>
+    <ScreenLayout plain backgroundColor={colors.white}>
       {/* Reservado para o asset do Figma: pessoa azul com pontos de interrogação.
           A ilustração não está disponível nos assets locais. */}
       <View accessible={false} aria-hidden style={{ height: 150 * scale }} />
       <Text accessibilityRole="header" style={[styles.title, {
-        maxWidth: 290 * scale, marginTop: 16 * scale, fontSize: 24 * textScale, lineHeight: 29 * textScale,
+        color: colors.text, maxWidth: 290 * scale, marginTop: 16 * scale, fontSize: 24 * textScale, lineHeight: 29 * textScale,
       }]}>Como funciona o questionário?</Text>
       <View style={[local.cards, { marginTop: 44 * scale, gap: 26 * scale }]}>
         {guidance.map(item => (
@@ -44,15 +52,15 @@ export default function QuestionnaireGuidanceScreen() {
           </View>
         ))}
       </View>
-      <ScreenButton label={hasAnswers ? 'Retomar questionário' : 'Iniciar questionário'} onPress={() => run(() => open('/questionnaire', { fromReview: 'false' }))}
+      <ScreenButton label={hasAnswers ? 'Retomar questionário' : 'Iniciar questionário'} brand onPress={() => run(() => open('/questionnaire', { fromReview: 'false' }))}
         scale={scale} textScale={textScale} marginTop={60 * scale} />
-      {hasAnswers && <ScreenButton label="Iniciar nova participação (apagar respostas)" outlined secondary
+      {hasAnswers && <ScreenButton label="Iniciar nova participação (apagar respostas)" brand outlined secondary
         onPress={() => run(() => { resetAnswers(); open('/questionnaire', { fromReview: 'false' }); })}
         scale={scale} textScale={textScale} marginTop={12 * scale} />}
-      <ScreenButton label="Voltar" outlined secondary
+      <ScreenButton label="Voltar" brand outlined secondary
         onPress={() => run(() => router.dismissTo('/sector'))}
         scale={scale} textScale={textScale} marginTop={12 * scale} />
-      <ScreenButton label="Fechar" outlined secondary onPress={() => run(() => { resetAnswers(); router.dismissTo('/'); })}
+      <ScreenButton label="Fechar" brand outlined secondary onPress={() => run(() => { resetParticipation(); router.dismissTo('/'); })}
         scale={scale} textScale={textScale} marginTop={12 * scale} />
     </ScreenLayout>
   );
@@ -60,15 +68,15 @@ export default function QuestionnaireGuidanceScreen() {
 
 const local = StyleSheet.create({
   cards: { width: '100%' },
-  card: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 8, borderRadius: 12, backgroundColor: '#B1C8D8' },
-  cardText: { flex: 1, color: '#101010' },
-  bold: { fontWeight: 'bold' },
-  iconTile: { width: 58, minHeight: 64, borderRadius: 12, backgroundColor: '#20465A', alignItems: 'center', justifyContent: 'center' },
-  icon: { fontSize: 42, lineHeight: 50, color: '#FFFFFF' },
-  clipboard: { width: 28, height: 34, borderRadius: 4, borderWidth: 3, borderColor: '#FFFFFF' },
-  clip: { position: 'absolute', top: -6, left: 5, width: 12, height: 8, borderRadius: 3, borderWidth: 2, borderColor: '#FFFFFF', backgroundColor: '#20465A' },
-  clipboardLine: { position: 'absolute', left: 4, width: 14, height: 2, backgroundColor: '#FFFFFF' },
-  clock: { width: 34, height: 34, borderRadius: 17, borderWidth: 3, borderColor: '#FFFFFF' },
-  hour: { position: 'absolute', left: 13, top: 4, width: 3, height: 12, borderRadius: 2, backgroundColor: '#FFFFFF' },
-  minute: { position: 'absolute', left: 13, top: 13, width: 10, height: 3, borderRadius: 2, backgroundColor: '#FFFFFF', transform: [{ rotate: '25deg' }] },
+  card: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 10, borderRadius: 12, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border },
+  cardText: { flex: 1, color: colors.textMuted },
+  bold: { fontWeight: 'bold', color: colors.text },
+  iconTile: { width: 58, minHeight: 64, borderRadius: 12, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' },
+  icon: { fontSize: 42, lineHeight: 50, color: colors.white },
+  clipboard: { width: 28, height: 34, borderRadius: 4, borderWidth: 3, borderColor: colors.white },
+  clip: { position: 'absolute', top: -6, left: 5, width: 12, height: 8, borderRadius: 3, borderWidth: 2, borderColor: colors.white, backgroundColor: colors.primary },
+  clipboardLine: { position: 'absolute', left: 4, width: 14, height: 2, backgroundColor: colors.white },
+  clock: { width: 34, height: 34, borderRadius: 17, borderWidth: 3, borderColor: colors.white },
+  hour: { position: 'absolute', left: 13, top: 4, width: 3, height: 12, borderRadius: 2, backgroundColor: colors.white },
+  minute: { position: 'absolute', left: 13, top: 13, width: 10, height: 3, borderRadius: 2, backgroundColor: colors.white, transform: [{ rotate: '25deg' }] },
 });

@@ -96,7 +96,7 @@ test('estado sobrevive à troca e remontagem de telas; corrigir uma resposta pre
   assert.match(textIn(session.mount('src/app/review.js').render()), /31 de 31 questões respondidas/);
 });
 
-test('incompleto e valores inválidos não habilitam confirmação; 31 respostas ainda não simulam envio', () => {
+test('incompleto e falta de setor/período não habilitam confirmação nem simulam envio', () => {
   const session = createSession();
   const { isQuestionnaireComplete, countAnswers } = session.load('src/data/questionnaireReview.js');
   const { questions } = session.load('src/data/questions.js');
@@ -105,15 +105,14 @@ test('incompleto e valores inválidos não habilitam confirmação; 31 respostas
   assert.equal(countAnswers(questions, { Q1: 'Inválida', Q31: 'Sim' }), 1);
   let tree = app.render();
   assert.equal(button(tree, 'Continuar para confirmação').disabled, true);
-  assert.equal(button(tree, 'Continuar para confirmação').onPress, undefined);
+  button(tree, 'Continuar para confirmação').onPress();
   assert.equal(findAll(tree, n => n.props.accessibilityRole === 'alert').length, 1);
   fill(session);
   assert.equal(isQuestionnaireComplete(session.state().answers), true);
   tree = app.render();
   assert.equal(findAll(tree, n => n.props.accessibilityRole === 'alert').length, 0);
-  assert.match(textIn(tree), /Todas as questões foram respondidas/);
   assert.equal(button(tree, 'Continuar para confirmação').disabled, true);
-  assert.equal(button(tree, 'Continuar para confirmação').onPress, undefined);
+  button(tree, 'Continuar para confirmação').onPress();
   assert.deepEqual(session.calls, []);
 });
 
@@ -164,6 +163,13 @@ test('voltar da revisão conserva a Q31; retorno sem histórico usa rota segura'
   questions.forEach((question, i) => {
     card(questionnaire.render()).onSelect(question.alternatives[0]);
     button(questionnaire.render(), i === 30 ? 'Revisar respostas' : 'Avançar').onPress();
+    if (i === 26) {
+      assert.equal(session.calls.pop()[1].pathname, '/sensitive-guidance');
+      const sensitive = session.mount('src/screens/SensitiveGuidanceScreen.js');
+      button(sensitive.render(), 'Entendi, continuar').onPress();
+      assert.equal(session.calls.pop()[1].pathname, '/questionnaire');
+      assert.equal(card(questionnaire.render()).question.id, 'Q28');
+    }
   });
   const next = session.calls.pop();
   assert.equal(next[0], 'push');

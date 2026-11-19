@@ -10,13 +10,13 @@ export function useScreenMetrics() {
   return { height, insets, scale, textScale: Math.max(1, scale) };
 }
 
-/** @param {{ children: import('react').ReactNode, beforeStart?: boolean, plain?: boolean, fill?: boolean }} props */
-export default function ScreenLayout({ children, beforeStart = false, plain = false, fill = false }) {
+/** @param {{ children: import('react').ReactNode, beforeStart?: boolean, plain?: boolean, fill?: boolean, backgroundColor?: string }} props */
+export default function ScreenLayout({ children, beforeStart = false, plain = false, fill = false, backgroundColor }) {
   const { height, insets, scale } = useScreenMetrics();
   return (
-    <View style={styles.background}>
+    <View style={[styles.background, backgroundColor && { backgroundColor }]}>
       <StatusBar style="dark" />
-      <View style={styles.screen}>
+      <View style={[styles.screen, backgroundColor && { backgroundColor }]}>
         <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
           <ScrollView contentInsetAdjustmentBehavior="never" contentContainerStyle={styles.scrollContent}>
             <View style={[styles.canvas, { minHeight: Math.max(0, height - insets.top) }]}>

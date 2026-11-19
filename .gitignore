@@ -44,3 +44,17 @@ yarn-error.*
 # Backend
 backend/node_modules
 backend/.env
+
+# Local credentials, environment, exports and generated test artifacts
+.env
+.env.*
+!.env.example
+!**/.env.example
+.admin.local.json
+backend/.admin.local.json.lock
+backend/.admin.local.json.*.tmp
+*.log
+coverage/
+backend/.tmp/
+*.dump
+*.backup

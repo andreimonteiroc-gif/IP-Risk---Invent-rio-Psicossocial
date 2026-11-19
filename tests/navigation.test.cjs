@@ -10,9 +10,21 @@ function createStackSession(initialRoutes) {
   const routes = initialRoutes.map(route => typeof route === 'string' ? { name: route } : route);
   const options = { routeNames: ['index', 'sector', 'questionnaire-guidance', 'questionnaire', 'review'], routeParamList: {}, routeGetIdList: {} };
   const stack = StackRouter({ initialRouteName: routes[0].name });
-  let state = stack.getInitialState(options);
-  state.routes[0].params = routes[0].params;
-  const dispatch = action => { state = stack.getStateForAction(state, action, options) || state; };
+  let state = {
+    type: 'stack',
+    key: 'stack-0',
+    routeKeySeq: 1,
+    routeNames: options.routeNames,
+    routes: [{ key: `${routes[0].name}-0`, name: routes[0].name, params: routes[0].params }],
+    index: 0,
+    stale: false,
+  };
+  const dispatch = action => {
+    const result = stack.getStateForAction(state, action, options);
+    if (result && typeof result === 'object' && 'state' in result && result.state) {
+      state = result.state;
+    }
+  };
   for (const route of routes.slice(1)) dispatch({ type: 'PUSH', payload: route });
   session.navigation.getState = () => state;
   // A identidade da rota permite verificar se retornamos à instância existente.

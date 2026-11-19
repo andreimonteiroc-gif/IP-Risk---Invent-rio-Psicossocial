@@ -1,68 +1,17 @@
-
-const express = require('express');
-
-const app = express();
-
-const PORT = 3000;
-
-app.get('/health', (req, res) => {
-    res.json({
-        status: 'ok',
-        mensagem: 'Backend do Inventario Psicossocial funcionando!'
-    });
-});
-
-
+const { createApp } = require('./app');
+const { createCorsServer } = require('./cors-server');
 const pool = require('./db');
+const { loadAdminAccounts } = require('./admin-config');
 
-app.get('/db-health', async (req, res) => {
-    try {
-        const resultado = await pool.query('SELECT NOW()');
+// Escritas somente no script de demonstração, que cria um schema isolado.
+const port = Number(process.env.PORT || 3000);
+const host = process.env.HOST || '0.0.0.0';
 
-        res.json({
-            status: 'ok',
-            mensagem: 'Conexao com PostgreSQL funcionando!',
-            horario: resultado.rows[0].now
-        });
-    } catch (erro) {
-        console.error('Erro ao conectar ao banco:', erro.code);
-
-        res.status(500).json({
-            status: 'erro',
-            mensagem: 'Falha na conexao com o banco.'
-        });
-    }
-});
-
-app.get('/setores', async (req, res) => {
-    try {
-        const resultado = await pool.query('SELECT * FROM setores');
-
-        res.json(resultado.rows);
-    } catch (erro) {
-        console.error('Erro ao consultar setores:', erro.code);
-
-        res.status(500).json({
-            mensagem: 'Erro ao consultar setores'
-        });
-    }
-});
-
-app.get('/periodos', async(req, res) => {
-
-try{ const resultado = await pool.query('SELECT * FROM periodos_coleta');
-    res.json(resultado.rows);}
-
-    catch(erro){
-        console.error('Erro ao consultar os periodos:', erro.code);
-        res.status(500).json({
-            mensagem: 'Erro ao consultar periodos'
-        });
-    }
-});
-
-
-
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+loadAdminAccounts(process.env.DB_PASSWORD).then(adminStore => {
+    const app = createApp({ pool, adminAccounts: adminStore.accounts, saveAdminAccounts: adminStore.saveAccounts,
+        databasePassword: process.env.DB_PASSWORD });
+    createCorsServer(app).listen(port, host, () => console.log(`Servidor rodando em http://${host}:${port}`));
+}).catch(() => {
+    console.error('Configuração administrativa inválida. Servidor não iniciado.');
+    process.exitCode = 1;
 });

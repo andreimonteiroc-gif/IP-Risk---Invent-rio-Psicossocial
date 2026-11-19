@@ -3,10 +3,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const ts = require('typescript');
+const { randomUUID } = require('node:crypto');
 
 // Executa os componentes/callbacks e o Provider reais. Somente o runtime de
 // hooks, as primitivas nativas e o roteador são substituídos: não é teste E2E.
-function createSession() {
+function createSession({ fetchImpl, apiUrl = 'http://demo.test' } = {}) {
+  const network = { fetch: fetchImpl || (async () => { throw new Error('Rede indisponível no teste'); }) };
   const cache = new Map();
   let states = [];
   let cursor = 0;
@@ -54,6 +56,8 @@ function createSession() {
     const jsx = (type, props) => ({ type, props: props || {} });
     const localRequire = name => {
       if (name === 'react') return hooks;
+      if (name === 'expo-crypto') return { randomUUID };
+      if (name === 'expo-constants') return { default: {} };
       if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx };
       if (name === 'expo-router') return {
         router, useLocalSearchParams: () => params, useNavigation: () => navigation,
@@ -81,7 +85,9 @@ function createSession() {
     const source = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
       compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS },
     }).outputText;
-    vm.runInNewContext(source, { require: localRequire, module, exports: module.exports });
+    vm.runInNewContext(source, { require: localRequire, module, exports: module.exports,
+      process: { env: { EXPO_PUBLIC_API_URL: apiUrl } }, fetch: (...args) => network.fetch(...args),
+      AbortController, setTimeout, clearTimeout });
     return module.exports;
   }
 
@@ -129,7 +135,7 @@ function createSession() {
       return tree;
     } };
   }
-  return { load, mount, calls, router, params, navigation, state: () => { renderProvider(); return value; } };
+  return { load, mount, calls, router, params, navigation, network, state: () => { renderProvider(); return value; } };
 }
 
 function findAll(tree, predicate) {

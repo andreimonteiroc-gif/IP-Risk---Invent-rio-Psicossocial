@@ -24,7 +24,7 @@ export default function useFlowNavigation(stepKey = 'screen') {
     }
   };
 
-  /** @param {'/questionnaire' | '/review'} pathname @param {Record<string, string>} [params] */
+  /** @param {'/questionnaire' | '/review' | '/sensitive-guidance' | '/submission-confirmation' | '/submission-sending' | '/submission-error' | '/submission-success'} pathname @param {Record<string, string>} [params] */
   const open = (pathname, params = {}) => {
     const href = { pathname, params };
     // As rotas deste fluxo pertencem ao mesmo Stack de src/app/_layout.js.

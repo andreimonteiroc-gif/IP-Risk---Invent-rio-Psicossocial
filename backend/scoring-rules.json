@@ -1,0 +1,22 @@
+{
+  "versao": "ier-mvp-2026-10-21-v1",
+  "referencia": "Definição final fornecida pelo responsável em 21/10/2026; prioridade ao questionário original de Wellington Moreira da Silva, Anexo II, páginas 23–24, conforme confirmação do responsável. Documentos originais não anexados ao repositório.",
+  "pontuacao_inicial_na_ordem": [100, 75, 50, 25, 0],
+  "diretas": [1, 2, 3, 4, 12, 17, 21, 22, 24, 25, 26],
+  "inversas": [5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 20, 23, 27],
+  "dimensoes": [
+    { "codigo": "exigencias_trabalho", "nome": "Exigências do Trabalho", "questoes": [1, 2, 3, 4] },
+    { "codigo": "organizacao_conteudo", "nome": "Organização e Conteúdo do Trabalho", "questoes": [5, 6, 7, 8] },
+    { "codigo": "relacoes_lideranca", "nome": "Relações Sociais e Liderança", "questoes": [9, 10, 11, 12, 13, 14, 15, 16] },
+    { "codigo": "interface_trabalho_familia", "nome": "Interface Trabalho-Família", "questoes": [17] },
+    { "codigo": "valores_organizacionais", "nome": "Valores Organizacionais", "questoes": [18, 19, 20] },
+    { "codigo": "seguranca_ocupacional", "nome": "Segurança Ocupacional", "questoes": [21, 22] },
+    { "codigo": "saude_bem_estar_desfechos", "nome": "Saúde, Bem-estar e Desfechos", "questoes": [23, 24, 25, 26, 27] }
+  ],
+  "ier_global": "média simples das 27 questões ajustadas, sem pesos",
+  "ier_dimensao": "média simples dos itens ajustados da dimensão",
+  "ier_coletivo": "média dos IER individuais válidos, global e por dimensão; sem arredondamento intermediário",
+  "excluidas": [28, 29, 30, 31],
+  "arredondamento": "uma casa decimal, metade para cima, apenas após a média coletiva",
+  "semaforo": { "verde": [0, 33.3], "amarelo": [33.4, 66.6], "vermelho": [66.7, 100] }
+}
